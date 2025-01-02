@@ -31,13 +31,16 @@
         SELECT no, title, content, writer
         FROM board
         WHERE no = #{no}
+        ORDER BY no DESC
     </select>
+<!--    내림차순 정렬-->
 
     <!-- 게시판 목록 검색    -->
     <select id="selectBoardAll"
             resultType="com.example.spring4.board.vo.BoardVO">
         SELECT no, title, content, writer
         FROM board
+        ORDER BY no DESC
     </select>
 
     <!-- 게시판 내용 조건 검색   -->

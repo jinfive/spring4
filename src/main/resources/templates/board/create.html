@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<div layout:fragment="content">
+    <!-- 게시판 작성 폼 -->
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8 col-sm-10">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-success text-white text-center">
+                        <h2>게시글 작성</h2>
+                    </div>
+                    <div class="card-body">
+                        <form action="/board/create2" method="post">
+                            <div class="mb-3">
+                                <label for="title" class="form-label">제목</label>
+                                <input type="text" id="title" name="title" class="form-control" placeholder="제목을 입력하세요"
+                                       required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="content" class="form-label">내용</label>
+                                <textarea id="content" name="content" class="form-control" rows="5"
+                                          placeholder="내용을 입력하세요" required></textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="writer" class="form-label">작성자</label>
+                                <input type="text" id="writer" name="writer"
+                                       class="form-control"
+                                       style="background-color: snow"
+                                       th:value="${session.id}" readonly required>
+                            </div>
+
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-secondary">작성하기</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</html>

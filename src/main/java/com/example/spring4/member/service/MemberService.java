@@ -15,21 +15,14 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder; //300(DI)
 
     public boolean login(MemberVO memberVO) {
-        //전처리하고
-        //dao를 찾아서 --> ok
-        //dao.메서드 호출
-        MemberVO memberVO1 = memberMapper.selectMemberById(memberVO.getId());
-        if (memberVO1 != null) {
-            if (memberVO1.getPw().equals(memberVO.getPw())) {
-                return true; //로그인 성공
-            } else {
-                return false; //로그인 실패
-            }
-        }else{
-            return false; //로그인 실패
+        MemberVO member = memberMapper.selectMemberById(memberVO.getId());
+
+        if (member != null) {
+            // 데이터베이스에서 가져온 암호화된 비밀번호와 입력한 비밀번호 비교
+            return passwordEncoder.matches(memberVO.getPw(), member.getPw());
         }
-        //후처리
-    }//login
+        return false; // 회원 정보가 없는 경우
+    }
 
     public int create2(MemberVO memberVO) {
         //mapper에게 주고 db처리해줘...
