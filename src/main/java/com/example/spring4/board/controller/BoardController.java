@@ -2,6 +2,7 @@ package com.example.spring4.board.controller;
 
 import com.example.spring4.board.service.BoardService;
 import com.example.spring4.board.vo.BoardVO;
+import com.example.spring4.member.vo.MemberVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -47,4 +48,40 @@ public class BoardController {
         //respose.sednRedirect("/board/board)를  브라우저에게 호출하도록 명령
         //get 요청
     }
+    @GetMapping("read")
+    public String read(int no ,Model model) {
+        //검색해서 가지고 온 다음에
+        BoardVO boardVO = boardService.selectBoardByNo(no);
+        model.addAttribute("boardVO", boardVO);
+        return "board/read";
+
+    }
+    @GetMapping("delete")
+    public String delete(int no) {
+        int result =boardService.deleteBoard(no);
+        if(result == 1) {
+            return "redirect:/board/board";
+        }
+        else {
+            return "error/error";
+        }
+
+
+    }
+
+    @GetMapping("update")
+    public String update(int no,Model model) {
+        BoardVO boardVO = boardService.selectBoardByNo(no);
+        model.addAttribute("boardVO", boardVO);
+        return "board/update";
+
+    }
+
+    @PostMapping("update2")
+    public String update2(BoardVO boardVO ) {
+        boardService.updateBoard(boardVO);
+        return "board/update2";
+    }
+
+
 }

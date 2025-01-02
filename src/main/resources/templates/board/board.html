@@ -13,8 +13,8 @@
                         <h2>게시판 목록</h2>
                     </div>
                     <div class="card-body">
-                        <!--            검색하는 부분            -->
-                        <table class="table table-hover table-bordered" style="background: white">
+                        <!-- 검색하는 부분  -->
+                        <table class="table table-hover table-bordered" style="background: #f9f9f9;">
                             <thead class="bg-warning text-white">
                             <tr class="text-center">
                                 <th scope="col">번호</th>
@@ -25,22 +25,24 @@
                             <tbody>
                             <tr th:each="boardVO : ${list}" class="text-center">
                                 <td>[[${boardVO.no}]]</td>
-                                <td>[[${boardVO.title}]]</td>
+                                <td>
+                                    <a th:href="@{/board/read(no=${boardVO.no})}"style="text-decoration: none">
+                                        <!-- a href="board/read?no=1" -->
+                                        [[${boardVO.title}]]
+                                    </a>
+                                </td>
                                 <td>[[${boardVO.writer}]]</td>
                             </tr>
                             </tbody>
                         </table>
-                            <!-- 로그인시 글작성한느 버튼       -->
-                        <div th:if="${session.id != null}"  class="d-grid mt-4">
-
+                        <!-- 로그인되었을 때 글작성 버튼  -->
+                        <div th:if="${session.id != null}" class="d-grid mt-4">
                             <a href="/board/create" class="btn btn-secondary btn-lg">
-                                새 게시글 작성하기
+                                새 게시글 작성
                             </a>
                         </div>
-
                     </div>
                 </div>
             </div>
-        </div>
 </body>
 </html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+
+<div layout:fragment="content">
+    <!-- 게시글 읽기 화면 -->
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-md-10 col-sm-12">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-success text-white text-center">
+                        <h2 th:text="${boardVO.title}">게시글 제목</h2>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered">
+                            <tbody>
+                            <tr class="text-center">
+                                <th scope="row" class="bg-light">번호</th>
+                                <td th:text="${boardVO.no}">게시글 번호</td>
+                            </tr>
+                            <tr class="text-center">
+                                <th scope="row" class="bg-light">작성자</th>
+                                <td th:text="${boardVO.writer}">작성자 이름</td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="bg-light text-center">내용</th>
+                                <td th:text="${boardVO.content}" style="height: 300px; white-space: pre-line;" >게시글 내용</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <div th:if="${session.id != null && session.id == boardVO.writer}">
+                            <div class="d-grid mt-4" >
+                                <a th:href="@{/board/update(no=${boardVO.no})}" class="btn btn-outline-success btn-lg">게시글 수정</a>
+                            </div>
+
+                            <div class="d-grid mt-4">
+                                <a th:href="@{/board/delete(no=${boardVO.no})}" class="btn btn-outline-success btn-lg">게시글 삭제</a>
+                            </div>
+                        </div>
+                        <div class="d-grid mt-4">
+                            <a href="/board/board" class="btn btn-secondary">목록으로 돌아가기</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</html>>
