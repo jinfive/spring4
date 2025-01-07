@@ -2,7 +2,10 @@ package com.example.spring4.board.controller;
 
 import com.example.spring4.board.service.BoardService;
 import com.example.spring4.board.vo.BoardVO;
+import com.example.spring4.member.service.MemberService;
 import com.example.spring4.member.vo.MemberVO;
+import com.example.spring4.reply.service.ReplyService;
+import com.example.spring4.reply.vo.ReplyVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BoardController {
     private final BoardService boardService;
+    private final ReplyService replyService;
 
     @GetMapping("board") //contextpath/board/board
     public String board(Model model) {
@@ -52,8 +56,19 @@ public class BoardController {
     public String read(int no ,Model model) {
         //검색해서 가지고 온 다음에
         BoardVO boardVO = boardService.selectBoardByNo(no);
-        model.addAttribute("boardVO", boardVO);
-        return "board/read";
+
+        //게시판 글 하나 + 댓글 리스트 (게시판 번호 검색)
+        List<ReplyVO> list = replyService.getReplyByBbsNO(no);
+        System.out.println(list.size());
+
+        // model로 넘기자
+        if (boardVO != null) {
+            model.addAttribute("boardVO", boardVO);
+            model.addAttribute("list", list);
+            return "board/read";
+        } else {
+            return "error/error";
+        }
 
     }
     @GetMapping("delete")

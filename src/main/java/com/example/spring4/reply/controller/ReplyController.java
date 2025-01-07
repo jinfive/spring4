@@ -1,16 +1,43 @@
-package com.example.spring4.cart.controller;
+package com.example.spring4.reply.controller;
 
+import com.example.spring4.reply.service.ReplyService;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+
+import com.example.spring4.reply.service.ReplyService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
 @Controller //싱글톤객체생성 + 아래에 나온 주소와 함수를 스프링에 등록
-@RequestMapping("cart") //contextpath/cart
-public class CartController {
+@RequestMapping("reply") //contextpath/cart
+public class ReplyController {
 
-    @GetMapping("cart") //contextpath/cart/cart
+    private final ReplyService replyService;
+
+    public ReplyController(ReplyService replyService) {
+        this.replyService = replyService;
+    }
+
+    @GetMapping("reply") //contextpath/cart/cart
     public String cart() {
-        System.out.println("cart 화면 요청>>>>>>>>>>>>>>>> ");
-        return "cart/cart";
+        System.out.println("reply 화면 요청>>>>>>>>>>>>>>>> ");
+        return "reply/reply"; //templates/reply/reply.html
+    }
+
+    //reply id
+    @DeleteMapping("delete/{id}") //replyvo에 id변수값 설정
+    @ResponseBody
+    //컨트롤러왔다가 template으로 안넘어가고 데이터만
+    // 전달하고자 하는 경우
+    public boolean deleteReply(@PathVariable int id) {
+        System.out.println("서버로 전달된 replyId " + id);
+
+        int result = replyService.deleteReply(id);
+        if (result == 1) {
+            return true;
+        }else{
+            return false;
+        }
     }
 }

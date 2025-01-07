@@ -1,8 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout}">
-
 <div layout:fragment="content">
     <!-- 게시글 읽기 화면 -->
     <div class="container mt-5">
@@ -25,17 +23,19 @@
                             </tr>
                             <tr>
                                 <th scope="row" class="bg-light text-center">내용</th>
-                                <td th:text="${boardVO.content}" style="height: 300px; white-space: pre-line;" >게시글 내용</td>
+                                <td th:text="${boardVO.content}" style="height: 300px; white-space: pre-line;">게시글 내용
+                                </td>
                             </tr>
                             </tbody>
                         </table>
                         <div th:if="${session.id != null && session.id == boardVO.writer}">
-                            <div class="d-grid mt-4" >
-                                <a th:href="@{/board/update(no=${boardVO.no})}" class="btn btn-outline-success btn-lg">게시글 수정</a>
-                            </div>
-
                             <div class="d-grid mt-4">
-                                <a th:href="@{/board/delete(no=${boardVO.no})}" class="btn btn-outline-success btn-lg">게시글 삭제</a>
+                                <a th:href="@{/board/update(no=${boardVO.no})}" class="btn btn-outline-success btn-lg">게시글
+                                    수정</a>
+                            </div>
+                            <div class="d-grid mt-4">
+                                <a th:href="@{/board/delete(no=${boardVO.no})}" class="btn btn-outline-success btn-lg">게시글
+                                    삭제</a>
                             </div>
                         </div>
                         <div class="d-grid mt-4">
@@ -43,9 +43,94 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="card shadow-sm" th:if="${session.id != null}">
+                    <!-- 댓글 작성 폼은 로그인 되어야만 글을 쓸 수 있기때문에
+                        세션있을 때만 보여줘라!
+                    -->
+                    댓글 작성 폼
+                </div>
+                <div class="card shadow-sm">
+                    <!-- 댓글 목록은 로그인되지 않아도 다 볼 수 있음. -->
+                    <div class="card-body">
+                        <h5 class="mb-3">댓글 목록</h5>
+                        <ul class="list-group" id="replyList">
+                            <!-- 댓글 추가시
+                                id가 replyList아래의 자식으로 추가하기 위해
+                                ul에 id부여함.
+                             -->
+                            <li class="list-group-item"
+                                th:each="replyVO : ${list}">
+                                <div class="d-flex justify-content-between">
+                                    <strong th:text="${replyVO.writer}">작성자</strong>
+                                    <div th:if="${session.id != null && session.id == replyVO.writer}">
+                                        <!-- 댓글 작성자와 로그인인 사람이 똑같으면서, 로그인했으면
+                                            수정, 삭제할 수 있는 버튼을 보여라 -->
+                                        <button
+                                                class="btn btn-outline-dark"
+                                                th:data-replyid="${replyVO.id}"
+
+                                                onclick="updateReply(this)">수정
+                                        </button>
+                                        <!--함수명(this)라고 하면 함수가 불러진 테그 객체가 전달됨
+                                            자바스크립트에서 button 속성값,테그객체객체가 전달
+                                            자바스크립트에서 button속성값, 텍스값들을 추출해서 쓸 수 있음.-->
+                                        <button
+                                                class="btn btn-outline-dark"
+                                                th:data-replyid="${replyVO.id}"
+
+                                                onclick="deleteReply(this)">삭제
+                                        </button>
+                                    </div>
+                                    <p class="mt-2" th:text="${replyVO.content}">댓글 내용</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
 </div>
+<th:block layout:fragment="script">
+    <!-- 자바 스크립트 끼워지는 부분 -->
+    <script>
+        function postReply() {
+            alert("댓글달기");
+        }
 
-</html>>
+        function deleteReply(button) {
+            const replyID = button.dataset.replyid;
+            //댓글 id(replyID)를 가지고와서
+            //서버에 전달해서 reply에서 삭제처리
+            //성공하면 ,해당 li를 replylist에서 삭제
+            alert("댓글삭제>>" + replyID)
+            //댓글 id를 가지고 와서
+            //서버에 전달해서 reply에서 삭제(비동기)
+            //ajax
+            //xml
+            //-fetch()
+            //axios
+            axios.delete("/reply/delete/" + replyID)
+                .then(function (response) {//응답 받아서 처리할 함수
+                    alert(response.status);//응답상태 코드값
+                    alert(response.data);
+                })
+                .catch(function (error) {
+
+                    }
+                );
+            //axios.get(주소만)
+            //axios(주소,전달 데이터)
+            //전달될 데이터,string,배열,json
+            //성공하면,li를 replylist에서 삭제
+        }
+
+        function updateReply(button) {
+            const replyID = button.dataset.replyid;
+            alert("댓글수정>>" + replyID)
+        }
+    </script>
+</th:block>
+</html>
