@@ -1,6 +1,7 @@
 package com.example.spring4.reply.controller;
 
 import com.example.spring4.reply.service.ReplyService;
+import com.example.spring4.reply.vo.ReplyVO;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,5 +40,19 @@ public class ReplyController {
         }else{
             return false;
         }
+    }
+
+    //자바스크립트에서 json으로 보낸것을 vo에 넣어줌.
+    @PutMapping("update/{id}")
+    @ResponseBody //html이 아닌 단순한 데이터를 받을떄
+    public boolean updateReply(@RequestBody ReplyVO replyVO) {
+        System.out.println(replyVO);
+        int result = replyService.updateReply(replyVO);
+        if (result == 1) {
+            return true;
+        }else{
+            return false;
+        }
+
     }
 }
