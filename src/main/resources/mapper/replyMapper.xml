@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.spring4.board.dao.BoardMapper">
+    <!--    MemberMapper.java와 연결이 됨.-->
+
+
+    <insert id="insertBoard"
+            parameterType="boardVO">
+        INSERT INTO board(title, content, writer)
+        VALUES (#{title}, #{content}, #{writer})
+    </insert>
+
+    <update id="updateBoard"
+            parameterType="boardVO">
+        UPDATE board
+        SET title = #{title}, content = #{content}
+        WHERE no = #{no}
+    </update>
+
+    <delete id="deleteBoard"
+            parameterType="int">
+        DELETE FROM board
+        WHERE no = #{no}
+    </delete>
+
+    <!-- 게시판 하나 검색   -->
+    <select id="selectBoardByNo"
+            parameterType="int"
+            resultType="com.example.spring4.board.vo.BoardVO">
+        SELECT no, title, content, writer
+        FROM board
+        WHERE no = #{no}
+        ORDER BY no DESC
+    </select>
+<!--    내림차순 정렬-->
+
+    <!-- 게시판 목록 검색    -->
+    <select id="selectBoardAll"
+            resultType="com.example.spring4.board.vo.BoardVO">
+        SELECT no, title, content, writer
+        FROM board
+        ORDER BY no DESC
+    </select>
+
+    <!-- 게시판 내용 조건 검색   -->
+    <select id="getBoardByContent"
+            parameterType="string"
+            resultType="com.example.spring4.board.vo.BoardVO">
+        SELECT no, title, content, writer
+        FROM board
+        WHERE content LIKE CONCAT('%', #{find}, '%')
+    </select>
+</mapper>
