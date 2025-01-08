@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
 <div layout:fragment="content">
     <!-- 게시글 읽기 화면 -->
     <div class="container mt-5">
@@ -22,21 +23,43 @@
                             </tr>
                             <tr>
                                 <th scope="row" class="bg-light text-center">내용</th>
-                                <td th:text="${boardVO.content}" style="height: 300px; white-space: pre-line;" >게시글 내용</td>
+                                <td th:text="${boardVO.content}" style="height: 300px; white-space: pre-line;">게시글 내용
+                                </td>
                             </tr>
                             </tbody>
                         </table>
                         <div th:if="${session.id != null && session.id == boardVO.writer}">
-                            <div class="d-grid mt-4" >
-                                <a th:href="@{/board/update(no=${boardVO.no})}" class="btn btn-outline-success btn-lg">게시글 수정</a>
+                            <div class="d-grid mt-4">
+                                <a th:href="@{/board/update(no=${boardVO.no})}" class="btn btn-outline-success btn-lg">게시글
+                                    수정</a>
                             </div>
                             <div class="d-grid mt-4">
-                                <a th:href="@{/board/delete(no=${boardVO.no})}" class="btn btn-outline-success btn-lg">게시글 삭제</a>
+                                <a th:href="@{/board/delete(no=${boardVO.no})}" class="btn btn-outline-success btn-lg">게시글
+                                    삭제</a>
                             </div>
                         </div>
                         <div class="d-grid mt-4">
                             <a href="/board/board" class="btn btn-secondary">목록으로 돌아가기</a>
                         </div>
+                    </div>
+                </div>
+
+                <!-- 댓글 작성 폼 -->
+                <div class="card shadow-sm mt-5 bg-light" th:if="${session.id != null}">
+                    <div class="card-body">
+                        <h5 class="mb-3">댓글 작성</h5>
+                        <form id="replyForm">
+                            <div class="form-group">
+                                <textarea class="form-control"
+                                          id="replyContent"
+                                          placeholder="댓글을 입력하세요." rows="3"></textarea>
+                            </div>
+                            <button type="button"
+                                    id="submitReply"
+                                    onclick="postReply()"
+                                    class="btn btn-success mt-3">댓글 등록
+                            </button>
+                        </form>
                     </div>
                 </div>
 
@@ -48,7 +71,7 @@
 
                             <!-- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  -->
                             <li class="list-group-item"
-                                th:id = "'reply' + ${replyVO.id}"
+                                th:id="'reply' + ${replyVO.id}"
                                 th:each="replyVO : ${list}">
                                 <!-- 댓글 하나 하나에 li태그에 id를 부여하자.."reply"+reply아이디 -->
                                 <!-- 댓글 추가와 댓글 삭제시 화면에 추가하거나 제거하는 대상이 됨. -->
@@ -62,17 +85,19 @@
                                         <button
                                                 class="btn btn-outline-dark"
                                                 th:data-replyid="${replyVO.id}"
-                                                onclick="updateReply(this)">수정</button>
+                                                onclick="updateReply(this)">수정
+                                        </button>
                                         <!-- 함수명(this)라고 하면 함수가 불러진 태그객체가 전달됨.
                                              자바스크립트에서 button속성값, 텍스값들을 추출해서 쓸 수 있음.
                                         -->
                                         <button
                                                 class="btn btn-outline-dark"
-                                                th:data-replyid = "${replyVO.id}"
-                                                onclick="deleteReply(this)">삭제</button>
+                                                th:data-replyid="${replyVO.id}"
+                                                onclick="deleteReply(this)">삭제
+                                        </button>
                                     </div>
                                     <p class="mt-2"
-                                       th:id = "'p' + ${replyVO.id}"
+                                       th:id="'p' + ${replyVO.id}"
                                        th:text="${replyVO.content}">댓글 내용</p>
                                 </div>
                             </li>
@@ -80,142 +105,113 @@
                     </div>
                 </div>
 
-            </div></div></div></div>
+            </div>
+        </div>
+    </div>
+</div>
 <th:block layout:fragment="script">
     <!-- 자바 스크립트 끼워지는 부분 -->
     <script>
-        //함수가 정의되어있는데 찾지 못하면
-        //리프레쉬(캐쉬삭제 효과), 함수 재명명 해줄 것.!
         function postReply() {
-            //        INSERT INTO reply(ORIID, CONTENT, WRITER)
-            //        VALUES (#{oriid}, #{content}, #{writer})
-            //oriid ==> ${boardVO.no}
-            //content ==> document.getElementById("replyContent").value
-            //writer ==> ${session.id}
+            const oriid = '[[${boardVO.no}]]';
+            const content = document.getElementById('replyContent').value;
+            const writer = '[[${session.id}]]';
 
-            const loginId = '[[${session.id}]]';
-            const replyContent = document.getElementById("replyContent").value;
-            console.log("loginId >> " + loginId + ", " + "replyContent >> " +replyContent);
-            if(replyContent.length == 0){
-                alert("댓글을 입력해주세요.");
-                return;
+
+            alert("댓글달기");
+            alert(oriid + " " + content + " " + writer);
+            if (content.length == 0) {
+                alert("댓글을 입력하세요");
             }
-            if (replyContent) {
-                //주소뒤에 /reply/create2/
-                // ===> 맨 뒤에 /붙이면 XXXXXX
-
+            if (content) {
+                // axios.post(주소,전달값 json)
                 axios.post("/reply/create2", {
-                    writer: loginId,
-                    content: replyContent,
-                    oriid: '[[${boardVO.no}]]'
-                })
-                    .then(response => {
-                        if (response.data != 0) {
-                            alert('댓글이 저장되었습니다.');
-                            document.getElementById("replyContent").value = "";
+                    oriid: oriid,
+                    content: content,
+                    writer: writer
+                }).then(function (response) {
+                    alert(response.status);
+                    alert(response.data);
 
-                            //id가 "replyid번호"인 것을 아래 추가하자
-                            let replyId = response.data;
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            }
 
-                            const rowId = 'reply' + replyId;
-
-                            //여러줄의 텍스트를 넣을 때는 `(백팃)사용함.
-                            //동적으로 생성되는 코드는 서버측 처리기술(타임리프)를 쓸 수 없음.
-                            //'백팃 사이에 ${자바스크립트변수명}하면 변수값이 출력됨.
-
-                            //<li class="list-group-item"
-                            const addRow = document.createElement("li");
-                            addRow.className = "list-group-item";
-                            addRow.innerHTML = `
-                                            <div class="d-flex justify-content-between align-items-center'>">
-                                            <span><strong>${loginId}</strong></span>
-                                            <button data-replyid="${replyId}"
-                                                    onclick="updateReply(this)"
-                                                    class="btn btn-outline-dark">수정</button>
-                                            <button data-replyid="${replyId}"
-                                                    onclick="deleteReply(this)"
-                                                    class="btn btn-outline-dark">삭제</button>
-                                        </div>
-                                        <p id="p${replyId}" class="mt-2">${replyContent}</p>
-                                        `;
-                            const replyList = document.getElementById('replyList');
-                            replyList.appendChild(addRow);
-                            location.reload();
-                            //특정 부분만 리로딩하려면 데이터를 서버로 부터 받아와서
-                            //해당 부분만 리로딩해야함.
-                        } else {
-                            alert('댓글 추가에 실패했습니다.');
-                        }
-                    }).catch(error => {
-                    console.error('댓글 추가 오류:', error);
-                    alert('댓글 추가에 실패했습니다.');
-                }); //axios
-            } //if
-        }//submitReply
+        }
 
         function deleteReply(button) {
-            //this ---> button
-            //button내의 data로 설정한 replyid값을 꺼낼 수 있음.
-            //이때 dataset.속성명은 소문자이여야함.
-            //th:data-replyid="${replyVO.id}" ---> th:data-replyid="1"
-
-            const replyId = button.dataset.replyid;
-            alert("replyId " + replyId);
-
-            if (replyId) {
-                //@DeleteMapping("delete/{id}")
-
-                axios.delete("/reply/delete/" + replyId)
-                    .then(response => {
-                        if (response.data) {
-                            alert('댓글이 삭제되었습니다.');
-                            alert("삭제할 id= " + ('reply' + replyId));
-
-                            //id가 "replyid번호"인 것을 삭제하자.
-                            const replyElement = document.getElementById('reply' + replyId);
-                            replyElement.remove();  //해당 노드 삭제, 비교)empty()하위 객체 삭제
-                        } else {
-                            alert('댓글 삭제에 실패했습니다.');
-                        }
-                    }).catch(error => {
-                    console.error('댓글 삭제 오류:', error);
-                    alert('댓글 삭제에 실패했습니다.');
-                }); //axios
-            } //if
-        } //delete
+            const replyId = button.dataset.replyid; //24
+            alert("댓글삭제>> " + replyId);
+            //댓글 id(replyId)를 가지고 와서
+            //서버에 전달해서 reply에서 삭제처리(비동기통신)
+            //ajax(async javascript and XML) --> json
+            //- XMLHttpRequest(XHR)
+            //- fetch()함수
+            //- axios객체
+            axios.delete("/reply/delete/" + replyId)
+                .then(function (response) {
+                    alert(response.status); //응답상태코드값
+                    alert(response.data); //http의 body추출
+                    //현재보이는 브라우저에서도 삭제된것은 보이지않게 처리해야함.
+                    //방법은 2가지
+                    // 1)해당 페이지를 다시 호출
+                    // location.reload();//현재주소를 f5(get요청)
+                    // 2)댓글 1개 (li)를 화면에서 지워버리자.
+                    //   dom tree에서 해당 node를 삭제
+                    // 삭제할 li(댓글 하나)를 찾자.
+                    //id가 reply24
+                    const replyTag = document.getElementById("reply" + replyId);
+                    replyTag.remove(); //empty()태그안에 있는 것을 지울 때
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            // axios.delete(주소)
+            //      .then(응답받아서 처리할 함수)
+            //      .catch(에러시 처리할 함수);
+            //axios.get(주소만);
+            //axios.post(주소, 전달될 데이터);
+            //전달될 데이터는 string, 배열, json
+            //성공하면, 해당 li를 replyList에서 삭제
+        }
 
         function updateReply(button) {
-            //update reply set content = 내용 where id = 아이디;
-            //---> id, content필요.
-            //클라이언트에서 찾아서 서버의 컨트롤러에 2개의 데이터를 전달해야함.
+            // UPDATE reply
+            // SET content = #{content}
+            // WHERE id = #{id}
+            //th:data-replyid="${replyVO.id}"
+            //th:data-testid=${testid}
+            //button.dadtdaset.testid;
+            const replyId = button.dataset.replyid;//24
+            alert("댓글수정>>> " + replyId);
+            //1. 수정할 값 입력해주자.
+            const updateContent = prompt("수정할 내용 입력");
 
-            //입력한 수정할 내용
-            const updatedContent = prompt('수정할 내용을 입력하세요:');
-            //댓글 아이디
-            const replyId = button.dataset.replyid;
-
-            if (updatedContent) {
-                axios.put('/reply/update', {
+            //2. replyId, 수정내용을 서버로 보내서 db까지 처리
+            //update reply
+            //set content = "수정내용"
+            //where id = 24
+            if (updateContent) {
+                //const response = axios.put("주소", {전달할데이터json});
+                //let data = response.data
+                //http요청을 하면 return http응답
+                //axios.put("주소", {전달할데이터}).then(처리함수(http응답전달));
+                axios.put("/reply/update", {
                     id: replyId,
-                    content: updatedContent
-                }).then(response => {
-                    if (response.data) {
-                        alert('댓글이 수정되었습니다.');
-                        alert('reply' + replyId);
-
-                        //id가 "replyid번호"인 곳 안쪽에 id가 "preplyid번호"인 곳에 내용을 수정해서 넣자.
-                        const replyElement = document.getElementById('reply' + replyId);
-                        document.getElementById('p' + replyId).textContent = updatedContent;
-                    } else {
-                        alert('댓글 수정에 실패했습니다.');
-                    }
-                }).catch(error => {
-                    console.error('댓글 수정 오류:', error);
-                    alert('댓글 수정에 실패했습니다.');
-                }); //axios
-            } //if
-        } //update
-
+                    content: updateContent
+                }).then(function (response) { //put요청이 성공했을 때
+                    alert(response.status);//http응답의 header상태코드
+                    alert(response.data); //http응답의 body에 들어있는 데이터
+                    //id가 p번호인 것을 찾아서 수정내용을 넣어주자.
+                    const pTag = document.getElementById('p' + replyId);
+                    pTag.textContent = updateContent;
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            }
+            //3. 성공했으면 수정내용으로 고쳐주자.
+        }
     </script>
 </th:block>
 </html>

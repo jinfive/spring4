@@ -24,10 +24,10 @@ public class ReplyService {
         return replyMapper.insertReply(replyVO);
     }
     //댓글 수정
+    //댓글 삭제
     public int updateReply(ReplyVO replyVO){
         return replyMapper.updateReply(replyVO);
     }
-    //댓글 삭제
     public int deleteReply(int id){
         return replyMapper.deleteReply(id);
     }

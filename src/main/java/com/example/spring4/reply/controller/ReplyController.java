@@ -26,6 +26,19 @@ public class ReplyController {
         return "reply/reply"; //templates/reply/reply.html
     }
 
+    @PostMapping("create2")
+    @ResponseBody//응답시 html이 아닌거
+    public boolean create2(@RequestBody ReplyVO replyVO) {   //RequestBody Json도착시 사용
+        System.out.println("========================"+replyVO);
+        int result = replyService.insertReply(replyVO);
+        if (result == 1) {
+            return true;
+        }else{
+            return false;
+        }
+
+    }
+
     //reply id
     @DeleteMapping("delete/{id}") //replyvo에 id변수값 설정
     @ResponseBody
@@ -43,7 +56,7 @@ public class ReplyController {
     }
 
     //자바스크립트에서 json으로 보낸것을 vo에 넣어줌.
-    @PutMapping("update/{id}")
+    @PutMapping("update")
     @ResponseBody //html이 아닌 단순한 데이터를 받을떄
     public boolean updateReply(@RequestBody ReplyVO replyVO) {
         System.out.println(replyVO);
