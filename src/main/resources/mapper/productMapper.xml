@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.spring4.product.dao.ProductMapper">
+
+    <select id="findById" resultType="com.example.spring4.product.vo.ProductVO" parameterType="long">
+        SELECT productId, name, content, company, img, price FROM product
+        WHERE productId = #{productId}
+    </select>
+    <select id="findAll" resultType="com.example.spring4.product.vo.ProductVO">
+        SELECT productId, name, content, company, img, price FROM product
+    </select>
+</mapper>
