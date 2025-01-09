@@ -1,11 +1,103 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout}">
 <body>
-
 <div layout:fragment="content">
-장바구니 화면.....
+    <div th:if="${session.id != null}">
+        <div class="container mt-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-10 col-md-12">
+                    <div class="card shadow-sm border-success">
+                        <div class="card-header bg-success text-white text-center">
+                            <h2>장바구니 목록</h2>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-bordered table-hover" style="background-color: #f9f9f9;">
+                                <thead class="bg-warning text-white">
+                                <tr class="text-center">
+                                    <th scope="col">
+                                        <input type="checkbox" id="selectAll" onclick="toggleSelectAll()"> 전체 선택
+                                    </th>
+                                    <th scope="col">장바구니 번호</th>
+                                    <th scope="col">회원 ID</th>
+                                    <th scope="col">회원 이름</th>
+                                    <th scope="col">전화번호</th>
+                                    <th scope="col">상품 번호</th>
+                                    <th scope="col">상품 이름</th>
+                                    <th scope="col">상품 가격</th>
+                                    <th scope="col">수량</th>
+                                    <th scope="col" colspan="2"></th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="cart : ${carts}">
+                                    <td>
+                                        <input type="checkbox" th:value="${cart.no}">
+                                    </td>
+                                    <td>[[${cart.no}]]</td>
+                                    <td>[[${cart.memberId}]]</td>
+                                    <td>[[${cart.memberName}]]</td>
+                                    <td>[[${cart.memberTel}]]</td>
+                                    <td>[[${cart.productId}]]</td>
+                                    <td>[[${cart.productName}]]</td>
+                                    <td>[[${cart.productPrice}]]</td>
+                                    <td>
+                                        <input type="number" th:value="${cart.count}">
+
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-warning btn-sm">
+                                            수정버튼
+                                        </button>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-danger btn-sm">
+                                            삭제버튼
+                                        </button>
+                                    </td>
+                                </tr>
+                                </tbody>
+
+
+                            </table>
+                            <div class="d-flex justify-content-between mt-4">
+                                <button class="btn btn-secondary btn-lg"
+                                        onclick="deleteProducts()">선택상품 삭제</button>
+                                <a href="/product/product"
+                                   class="btn btn-secondary btn-lg">상품페이지로</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:if="${session.id == null}">
+        <script>
+            alert("로그인이 필요합니다. 로그인 화면으로 이동합니다.");
+            location.href = "/member/member";
+        </script>
+    </div>
 </div>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

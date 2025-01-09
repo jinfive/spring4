@@ -2,6 +2,67 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.spring4.cart.dao.CartMapper">
+    <!--    MemberMapper.java와 연결이 됨.-->
 
-
+    <insert id="createCart"
+            parameterType="cartVO"
+            useGeneratedKeys="true"
+            keyColumn="no">
+        <!-- insert하고 나서 cart의 autoincrement한 값을 바로 알고 싶은 경우
+            입력파라메터인 cartVO의 no에 자동으로 넣어줌.
+            -->
+        INSERT INTO cart(memberId, productId, count)
+        VALUES (#{memberId}, #{productId}, #{count})
+    </insert>
+    <update id="updateCount"
+            parameterType="cartVO">
+        UPDATE cart
+        SET count = #{count}
+        WHERE no = #{no}
+    </update>
+    <delete id="deleteProduct"
+            parameterType="long">
+        DELETE FROM cart
+        WHERE no = #{no}
+    </delete>
+    <delete id="deleteProducts"
+            parameterType="list">
+        --     DELETE FROM cart
+--     WHERE no IN(#{no},#{no}) for if문을 이용한 동적 쿼리
+        DELETE
+        FROM cart
+        WHERE no IN
+        <foreach collection="list" item="no"
+                 open="(" separator="," close=")">
+            <if test="no != 5">#{no}</if>
+        </foreach>
+    </delete>
+    <select id="findCartsByMemberId"
+            parameterType="string"
+            resultType="com.example.spring4.cart.vo.CartDetailsDTO">
+        SELECT
+            c.no, c.memberId, c.productId, c.count,
+            m.name as memberName, m.tel as memberTel,
+            p.name as productName, p.price as productPrice
+        FROM cart c
+                 JOIN member m ON c.memberId = m.id
+                 JOIN product p ON c.productId = p.productId
+        WHERE m.id = #{memberId}
+    </select>
+    <select id="findProductByMemberId"
+            resultType="com.example.spring4.cart.vo.CartVO">
+        SELECT no, productId, memberId, count
+        FROM cart
+        WHERE productId = #{productId} and memberId = #{memberId}
+    </select>
 </mapper>
+
+
+
+
+
+
+
+
+
+
