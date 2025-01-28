@@ -19,7 +19,21 @@ public class CartService {
 
     //장바구니에 넣기
     public int createCart(CartVO cartVO){
-        return cartMapper.createCart(cartVO);
+        //넣기전에 기존 장바구니에 이미 있는지 확인을 해야함.
+        //memberID,productID검색
+        int result = 0;
+        CartVO findCartVO =cartMapper.findProductByMemberId(cartVO.getProductId(), cartVO.getMemberId());
+        if(findCartVO!=null){
+            findCartVO.setCount(findCartVO.getCount() +1);
+            result = cartMapper.updateCount(findCartVO);
+        }
+        else {
+            result = cartMapper.createCart(cartVO);
+            System.out.println(cartVO);
+
+        }
+        System.out.println("추가후 cartVO>>>>>>>>>>>>>>>>>>>>>>>>>>"+cartVO);
+        return result;
     }
 
     //장바구니 로그인사람기준으로 검색 목록
